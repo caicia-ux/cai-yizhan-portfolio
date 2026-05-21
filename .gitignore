@@ -1,0 +1,10 @@
+# Keep source folders local; the published site uses optimized web images.
+/5.5AI/
+/AI/
+/AI洗护套组/
+/建模精修/
+/拍摄精修/
+/杂图/
+
+# Local verification captures.
+/verify-*.png
