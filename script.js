@@ -13,6 +13,9 @@ const lightbox = document.querySelector(".lightbox");
 const lightboxImage = document.querySelector("[data-lightbox-image]");
 const lightboxCaption = document.querySelector("[data-lightbox-caption]");
 const lightboxClose = document.querySelector("[data-lightbox-close]");
+const contactModal = document.querySelector(".contact-modal");
+const contactOpen = document.querySelector("[data-contact-open]");
+const contactClose = document.querySelector("[data-contact-close]");
 
 const projects = {
   "warm-care": {
@@ -132,6 +135,11 @@ window.addEventListener("keydown", (event) => {
     return;
   }
 
+  if (contactModal.classList.contains("is-open") && event.key === "Escape") {
+    closeContact();
+    return;
+  }
+
   if (galleryModal.classList.contains("is-open") && event.key === "Escape") {
     closeGallery();
   }
@@ -205,12 +213,28 @@ function closeLightbox() {
   lightboxCaption.textContent = "";
 }
 
+function openContact() {
+  contactModal.classList.add("is-open");
+  contactModal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("is-modal-open");
+  contactClose.focus();
+}
+
+function closeContact() {
+  contactModal.classList.remove("is-open");
+  contactModal.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("is-modal-open");
+  contactOpen.focus();
+}
+
 workCards.forEach((card) => {
   card.addEventListener("click", () => openGallery(card.dataset.project));
 });
 
 galleryClose.addEventListener("click", closeGallery);
 lightboxClose.addEventListener("click", closeLightbox);
+contactOpen.addEventListener("click", openContact);
+contactClose.addEventListener("click", closeContact);
 
 galleryModal.addEventListener("click", (event) => {
   if (event.target === galleryModal) closeGallery();
@@ -218,4 +242,8 @@ galleryModal.addEventListener("click", (event) => {
 
 lightbox.addEventListener("click", (event) => {
   if (event.target === lightbox) closeLightbox();
+});
+
+contactModal.addEventListener("click", (event) => {
+  if (event.target === contactModal) closeContact();
 });
