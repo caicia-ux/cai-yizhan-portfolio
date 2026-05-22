@@ -3,6 +3,7 @@ const screens = Array.from(document.querySelectorAll("[data-screen]"));
 const filterButtons = Array.from(document.querySelectorAll("[data-filter]"));
 const workCards = Array.from(document.querySelectorAll(".work-card"));
 const sectionLinks = Array.from(document.querySelectorAll('a[href^="#"]'));
+const sectionRail = document.querySelector(".section-rail");
 const galleryModal = document.querySelector(".gallery-modal");
 const galleryGrid = document.querySelector("[data-gallery-grid]");
 const galleryTitle = document.querySelector("#gallery-title");
@@ -51,18 +52,7 @@ const initialIndex = Math.max(
   screens.findIndex((screen) => screen.id === window.location.hash.slice(1))
 );
 let currentIndex = initialIndex;
-let isWheelLocked = false;
-let wheelDelta = 0;
-let wheelResetTimer;
-
-function getNearestScreenIndex() {
-  const scrollTop = window.scrollY || document.documentElement.scrollTop;
-  return screens.reduce((nearestIndex, screen, index) => {
-    const currentDistance = Math.abs(screen.offsetTop - scrollTop);
-    const nearestDistance = Math.abs(screens[nearestIndex].offsetTop - scrollTop);
-    return currentDistance < nearestDistance ? index : nearestIndex;
-  }, 0);
-}
+let railFrame;
 
 function setActiveScreen(index) {
   currentIndex = Math.max(0, Math.min(index, screens.length - 1));
@@ -85,6 +75,14 @@ function goToScreen(index) {
   history.replaceState(null, "", `#${screen.id}`);
 }
 
+function updateRailProgress() {
+  const scrollTop = window.scrollY || document.documentElement.scrollTop;
+  const scrollRange = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = scrollRange > 0 ? Math.min(1, Math.max(0, scrollTop / scrollRange)) : 0;
+
+  sectionRail?.style.setProperty("--rail-progress", progress.toFixed(4));
+}
+
 const observer = new IntersectionObserver(
   (entries) => {
     const visible = entries
@@ -95,10 +93,20 @@ const observer = new IntersectionObserver(
 
     setActiveScreen(screens.indexOf(visible.target));
   },
-  { threshold: [0.45, 0.6, 0.75] }
+  { threshold: [0.12, 0.35, 0.6] }
 );
 
 screens.forEach((screen) => observer.observe(screen));
+updateRailProgress();
+
+window.addEventListener(
+  "scroll",
+  () => {
+    window.cancelAnimationFrame(railFrame);
+    railFrame = window.requestAnimationFrame(updateRailProgress);
+  },
+  { passive: true }
+);
 
 if (window.location.hash && initialIndex >= 0) {
   window.requestAnimationFrame(() => {
@@ -118,50 +126,7 @@ sectionLinks.forEach((link) => {
   });
 });
 
-function handleWheel(event) {
-  if (
-    document.body.classList.contains("is-modal-open") ||
-    window.matchMedia("(max-width: 720px)").matches ||
-    event.ctrlKey
-  ) {
-    return;
-  }
-
-  const deltaY = event.deltaY ?? event.wheelDelta * -1 ?? event.detail ?? 0;
-  const deltaX = event.deltaX ?? 0;
-  const delta = Math.abs(deltaY) >= Math.abs(deltaX) ? deltaY : 0;
-  if (Math.abs(delta) < 1) return;
-
-  event.preventDefault();
-  if (isWheelLocked) return;
-
-  window.clearTimeout(wheelResetTimer);
-  wheelDelta += delta;
-  wheelResetTimer = window.setTimeout(() => {
-    wheelDelta = 0;
-  }, 140);
-
-  if (Math.abs(wheelDelta) < 42) return;
-
-  isWheelLocked = true;
-  currentIndex = getNearestScreenIndex();
-  goToScreen(currentIndex + (wheelDelta > 0 ? 1 : -1));
-  wheelDelta = 0;
-
-  window.setTimeout(() => {
-    isWheelLocked = false;
-  }, 820);
-}
-
-[window, document, document.documentElement, document.body].forEach((target) => {
-  target.addEventListener("wheel", handleWheel, { passive: false, capture: true });
-  target.addEventListener("mousewheel", handleWheel, { passive: false, capture: true });
-});
-
 window.addEventListener("keydown", (event) => {
-  const nextKeys = ["ArrowDown", "PageDown", " "];
-  const previousKeys = ["ArrowUp", "PageUp"];
-
   if (lightbox.classList.contains("is-open") && event.key === "Escape") {
     closeLightbox();
     return;
@@ -169,19 +134,6 @@ window.addEventListener("keydown", (event) => {
 
   if (galleryModal.classList.contains("is-open") && event.key === "Escape") {
     closeGallery();
-    return;
-  }
-
-  if (document.body.classList.contains("is-modal-open")) return;
-
-  if (nextKeys.includes(event.key)) {
-    event.preventDefault();
-    goToScreen(currentIndex + 1);
-  }
-
-  if (previousKeys.includes(event.key)) {
-    event.preventDefault();
-    goToScreen(currentIndex - 1);
   }
 });
 

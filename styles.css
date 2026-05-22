@@ -157,32 +157,66 @@ img {
 }
 
 .section-rail {
+  --rail-progress: 0;
   position: fixed;
   right: 24px;
   top: 50%;
   z-index: 30;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  width: 28px;
+  height: min(44vh, 380px);
   transform: translateY(-50%);
 }
 
-.rail-dot {
-  width: 7px;
-  height: 38px;
-  border-radius: 999px;
-  border: 1px solid rgba(151, 180, 154, 0.34);
-  background: rgba(255, 255, 255, 0.06);
-  transition: background 0.25s ease, height 0.25s ease;
+.section-rail::before,
+.section-rail::after {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  content: "";
+  transform: translateX(-50%);
 }
 
-.rail-dot.is-active {
-  height: 58px;
+.section-rail::before {
+  background: rgba(151, 180, 154, 0.24);
+}
+
+.section-rail::after {
+  bottom: auto;
+  height: max(18px, calc(var(--rail-progress) * 100%));
+  background: linear-gradient(180deg, var(--sage), rgba(116, 199, 221, 0.72));
+  transition: height 0.16s ease-out;
+}
+
+.rail-dot {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+}
+
+.rail-dot::before {
+  width: 8px;
+  height: 1px;
+  content: "";
+  background: rgba(245, 244, 239, 0.42);
+  transition: width 0.25s ease, background 0.25s ease;
+}
+
+.rail-dot.is-active::before {
+  width: 20px;
   background: var(--sage);
 }
 
 main {
-  scroll-snap-type: y mandatory;
+  scroll-snap-type: none;
 }
 
 .screen {
@@ -191,7 +225,6 @@ main {
   min-height: 100vh;
   min-height: 100svh;
   padding: 104px clamp(24px, 5vw, 64px) 46px;
-  scroll-snap-align: start;
   overflow: hidden;
 }
 
@@ -679,9 +712,9 @@ h1 span,
 
 .work-grid {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: start;
-  gap: clamp(10px, 1.2vw, 16px);
+  gap: clamp(16px, 1.8vw, 24px);
 }
 
 .work-card {
@@ -993,10 +1026,6 @@ h1 span,
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .work-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
   .gallery-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1033,13 +1062,10 @@ h1 span,
     right: 10px;
   }
 
-  .rail-dot {
-    width: 5px;
-    height: 28px;
-  }
-
-  .rail-dot.is-active {
-    height: 44px;
+  .section-rail {
+    right: 6px;
+    width: 20px;
+    height: min(38vh, 260px);
   }
 
   .screen {
