@@ -41,7 +41,19 @@ const projects = {
   "photo-retouch": {
     title: "香氛护肤摄影精修",
     copy: "从橙花香氛到水感护肤，将实拍素材的色彩、液体质感、肤感光线和陈列关系打磨成更利于销售展示的画面。",
-    images: Array.from({ length: 12 }, (_, index) => `./assets/works/photo-retouch/${String(index + 1).padStart(2, "0")}.jpg`)
+    images: [
+      "./assets/works/photo-retouch/01.jpg",
+      "./assets/works/photo-retouch/02.jpg",
+      "./assets/works/photo-retouch/03.jpg",
+      "./assets/works/photo-retouch/04.jpg",
+      "./assets/works/photo-retouch/05.jpg",
+      "./assets/works/photo-retouch/06.jpg",
+      "./assets/works/photo-retouch/08.jpg",
+      "./assets/works/photo-retouch/09.jpg",
+      "./assets/works/photo-retouch/10.jpg",
+      "./assets/works/photo-retouch/11.jpg",
+      "./assets/works/photo-retouch/12.jpg"
+    ]
   },
   "mixed-visuals": {
     title: "彩妆护发商业视觉实验",
