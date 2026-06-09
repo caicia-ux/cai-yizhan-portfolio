@@ -715,7 +715,7 @@ h1 span,
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: start;
-  gap: clamp(16px, 1.8vw, 24px);
+  gap: clamp(8px, 1vw, 12px);
 }
 
 .work-card {
