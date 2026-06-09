@@ -48,7 +48,6 @@ const projects = {
       "./assets/works/photo-retouch/04.jpg",
       "./assets/works/photo-retouch/05.jpg",
       "./assets/works/photo-retouch/06.jpg",
-      "./assets/works/photo-retouch/08.jpg",
       "./assets/works/photo-retouch/09.jpg",
       "./assets/works/photo-retouch/10.jpg",
       "./assets/works/photo-retouch/11.jpg",
